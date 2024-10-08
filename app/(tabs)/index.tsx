@@ -1,70 +1,75 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import HomeProductItem from "@/components/product/HomeProductItem";
+import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
+import { Image, ScrollView, Text, TextInput, View } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <View className="w-full h-full">
+      {/* Header */}
+      <View className="p-5 mb-5 mt-7">
+        <View className="flex flex-row items-center justify-between">
+          <View className="flex flex-row items-center gap-x-4">
+            <Image source={require("@/assets/images/Logo02.png")} />
+            <Text className="text-4xl font-semibold text-primary">Gear-K</Text>
+          </View>
+          <Ionicons name="menu-sharp" size={30} />
+        </View>
+      </View>
+      {/* Search */}
+      <View className="mb-4 px-7">
+        <TextInput
+          placeholder="Try search here..."
+          className="px-4 py-2 border rounded-lg text-slate-500 focus:border-primary"
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      </View>
+      {/* Slider */}
+      <View className="px-5">
+        <View className="h-[200px] rounded-[15px] overflow-hidden mb-4">
+          <Image
+            source={require("@/assets/images/slide_2.jpg")}
+            className="object-cover w-full h-full"
+          />
+        </View>
+      </View>
+
+      {/* Categories */}
+      <View className="px-3 mb-4">
+        <Text className="mb-2 text-lg">Categories</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View className="flex flex-row gap-x-4">
+            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
+              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
+              <Text className="font-semibold text-primary">Headphone</Text>
+            </View>
+            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
+              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
+              <Text className="font-semibold text-primary">Headphone</Text>
+            </View>
+            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
+              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
+              <Text className="font-semibold text-primary">Headphone</Text>
+            </View>
+            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
+              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
+              <Text className="font-semibold text-primary">Headphone</Text>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+
+      {/* Product */}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="px-3">
+          <View className="flex flex-row flex-wrap">
+            {/* Product Item  */}
+            <HomeProductItem />
+            <HomeProductItem />
+            <HomeProductItem />
+            <HomeProductItem />
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
