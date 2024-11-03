@@ -1,4 +1,6 @@
-import HomeProductItem from "@/components/product/HomeProductItem";
+import BannerCarousel from "@/components/home/BannerCarousel";
+import CategoryWrap from "@/components/home/CategoryWrap";
+import HomeProductList from "@/components/home/HomeProductList";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Image, ScrollView, Text, TextInput, View } from "react-native";
@@ -13,7 +15,9 @@ export default function HomeScreen() {
             <Image source={require("@/assets/images/Logo02.png")} />
             <Text className="text-4xl font-semibold text-primary">Gear-K</Text>
           </View>
-          <Ionicons name="menu-sharp" size={30} />
+          <Link href={"/sign-in"}>
+            <Ionicons name="menu-sharp" size={30} />
+          </Link>
         </View>
       </View>
       {/* Search */}
@@ -24,52 +28,20 @@ export default function HomeScreen() {
         />
       </View>
       {/* Slider */}
-      <View className="px-5">
-        <View className="h-[200px] rounded-[15px] overflow-hidden mb-4">
-          <Image
-            source={require("@/assets/images/slide_2.jpg")}
-            className="object-cover w-full h-full"
-          />
-        </View>
+      <View className="relative px-5 h-[200px] mb-2">
+        <BannerCarousel />
       </View>
 
       {/* Categories */}
       <View className="px-3 mb-4">
         <Text className="mb-2 text-lg">Categories</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View className="flex flex-row gap-x-4">
-            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
-              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
-              <Text className="font-semibold text-primary">Headphone</Text>
-            </View>
-            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
-              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
-              <Text className="font-semibold text-primary">Headphone</Text>
-            </View>
-            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
-              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
-              <Text className="font-semibold text-primary">Headphone</Text>
-            </View>
-            <View className="rounded-[10px] flex flex-row items-center gap-x-2 bg-[#651fff33] group px-3 py-1">
-              <Ionicons name="headset-outline" size={24} color={"#651fff"} />
-              <Text className="font-semibold text-primary">Headphone</Text>
-            </View>
-          </View>
+          <CategoryWrap />
         </ScrollView>
       </View>
 
       {/* Product */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="px-3">
-          <View className="flex flex-row flex-wrap">
-            {/* Product Item  */}
-            <HomeProductItem />
-            <HomeProductItem />
-            <HomeProductItem />
-            <HomeProductItem />
-          </View>
-        </View>
-      </ScrollView>
+      <HomeProductList />
     </View>
   );
 }

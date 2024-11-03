@@ -1,7 +1,28 @@
 import ProfileItem from "@/components/profile/ProfileItem";
+import { IMAGE_URL } from "@/constants";
+import { User } from "@/interfaces";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const ProfileScreen = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.error("Failed to load user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <>
       <View>
@@ -12,16 +33,20 @@ const ProfileScreen = () => {
           <View className="mx-auto mb-10">
             <View className="w-[150px] h-[150px] rounded-full overflow-hidden mb-2">
               <Image
-                source={require("@/assets/images/tai-nghe-logitech-g633s.webp")}
+                source={
+                  user?.avatar
+                    ? { uri: `${IMAGE_URL}/users/${user.avatar}` }
+                    : require("@/assets/images/default_avt.jpg")
+                }
                 className="object-cover w-full h-full"
               />
             </View>
             <View className="mb-3">
               <Text className="text-xl font-medium text-center">
-                Thành Nguyễn
+                {user?.full_name || "Guest User"}
               </Text>
               <Text className="text-base text-slate-600">
-                kent21072004@gmail.com
+                {user?.email || "No email available"}
               </Text>
             </View>
             <View>
