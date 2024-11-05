@@ -56,6 +56,8 @@ const ChangePasswordScreen = () => {
         Toast.show({
           type: "success",
           text1: response || "Change password successfully!",
+          autoHide: true,
+          visibilityTime: 500,
         });
         router.push("/profile");
       }

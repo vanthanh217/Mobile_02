@@ -1,5 +1,6 @@
 import { cartService } from "@/api/cart-api";
 import { IMAGE_URL } from "@/constants";
+import { useCart } from "@/contexts/CartContext";
 import { Brand, Product, User } from "@/interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,6 +17,7 @@ const HomeProductItem: React.FC<HomeProductItemProps> = ({ product }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const brand = product?.brand as Brand;
+  const { triggerRefreshCart } = useCart();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,7 +46,13 @@ const HomeProductItem: React.FC<HomeProductItemProps> = ({ product }) => {
         productId: product.id,
         quantity: 1,
       });
-      Toast.show({ type: "success", text1: "Add to cart successfully!" });
+      triggerRefreshCart();
+      Toast.show({
+        type: "success",
+        text1: "Add to cart successfully!",
+        autoHide: true,
+        visibilityTime: 700,
+      });
     } catch (error: any) {
       Toast.show({
         type: "error",

@@ -13,6 +13,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -63,30 +64,35 @@ function RootLayoutWrap() {
       <View style={{ position: "absolute", zIndex: 9999, width: "100%" }}>
         <Toast topOffset={50} />
       </View>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="products/[slug]/page"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="users/change-password/index"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="users/edit-user/index"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="order/payment-method"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="order/checkout" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <CartProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="products/[slug]/page"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="users/change-password/index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="users/edit-user/index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="order/payment-method"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="order/checkout"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </CartProvider>
     </ThemeProvider>
   );
 }

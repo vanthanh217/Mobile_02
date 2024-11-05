@@ -23,7 +23,7 @@ const Checkout = () => {
           loop={false}
           style={styles.animation}
         />
-        <Text style={styles.successText}>Thanh toán thành công!</Text>
+        <Text style={styles.successText}>Payment successfully!</Text>
       </View>
     </>
   );

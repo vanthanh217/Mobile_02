@@ -1,6 +1,8 @@
 import { cartService } from "@/api/cart-api";
 import { getProductItem, getRelatedProducts } from "@/api/product-api";
+import { wishlistService } from "@/api/wishlist-api";
 import { IMAGE_URL } from "@/constants";
+import { useCart } from "@/contexts/CartContext";
 import { Brand, Product, User } from "@/interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,6 +29,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const { triggerRefreshCart, userId } = useCart();
 
   const increaseQuantity = () =>
     setQuantity((prev) => (typeof prev === "number" ? prev + 1 : 1));
@@ -59,7 +62,7 @@ const ProductDetail = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    (async () => {
       try {
         const data = await getProductItem(slug as string);
         setProduct(data);
@@ -68,10 +71,8 @@ const ProductDetail = () => {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchProduct();
-  }, []);
+    })();
+  }, [slug]);
   const brand = product?.brand as Brand;
 
   useEffect(() => {
@@ -89,17 +90,28 @@ const ProductDetail = () => {
 
   const addToCart = async () => {
     if (!user) {
-      Toast.show({ type: "info", text1: "Please sign in before add to cart!" });
+      Toast.show({
+        type: "info",
+        text1: "Please sign in before add to cart!",
+        autoHide: true,
+        visibilityTime: 500,
+      });
       return;
     }
 
     try {
       setLoading(true);
-      await cartService.addToCart(user.user_id || USER_ID, {
+      await cartService.addToCart(userId || user.user_id || USER_ID, {
         productId: product?.id || 1,
         quantity: Number(quantity),
       });
-      Toast.show({ type: "success", text1: "Add to cart successfully!" });
+      triggerRefreshCart();
+      Toast.show({
+        type: "success",
+        text1: "Add to cart successfully!",
+        autoHide: true,
+        visibilityTime: 500,
+      });
     } catch (error: any) {
       Toast.show({
         type: "error",
@@ -110,17 +122,54 @@ const ProductDetail = () => {
     }
   };
 
+  const addToWishlist = async () => {
+    if (!user) {
+      Toast.show({
+        type: "info",
+        text1: "Please sign in before add to wishlist!",
+        autoHide: true,
+        visibilityTime: 500,
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await wishlistService.addToWishlist(user.user_id, product?.id || 1);
+      Toast.show({
+        type: "success",
+        text1: "Add to wishlist successfully!",
+        autoHide: true,
+        visibilityTime: 500,
+      });
+    } catch (error: any) {
+      Toast.show({
+        type: "error",
+        text1: error.message || "Error when add to wishlist",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <ScrollView scrollEventThrottle={16} showsVerticalScrollIndicator={false}>
         <View className="px-5">
-          <View className="p-2 mt-10 mb-4">
+          <View className="flex flex-row items-center justify-between p-2 mt-10 mb-4">
             <TouchableOpacity
               activeOpacity={0.9}
               className="flex flex-row items-center justify-center bg-[#F5F5F5] border border-silver rounded-lg w-10 h-10"
               onPress={() => router.push("/")}
             >
               <Ionicons name="chevron-back-outline" size={24} color="#757575" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              className="flex flex-row items-center justify-center bg-[#F5F5F5] border border-silver rounded-lg w-10 h-10"
+              onPress={addToWishlist}
+            >
+              <Ionicons name="heart-outline" size={24} color="#757575" />
             </TouchableOpacity>
           </View>
           <View className="h-[275px] rounded-xl overflow-hidden mb-4">
@@ -145,7 +194,7 @@ const ProductDetail = () => {
                 }).format(product?.price ?? 0)}
               </Text>
             </View>
-            <View className="flex flex-row items-center p-4 rounded-full gap-x-5">
+            <View className="flex flex-row flex-wrap items-center p-4 rounded-full gap-x-5">
               <View className="flex flex-row items-center justify-between bg-[#F5F5F5] border border-silver rounded-lg max-w-[160px] h-12">
                 <TouchableOpacity
                   activeOpacity={0.9}

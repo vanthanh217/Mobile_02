@@ -19,8 +19,8 @@ const PaymentScreen = () => {
   const router = useRouter();
 
   const methods = [
-    { id: EPaymentMethod.CASH, label: "Tiền mặt" },
-    { id: EPaymentMethod.BANK_TRANSFER, label: "Chuyển khoản" },
+    { id: EPaymentMethod.CASH, label: "Cash" },
+    { id: EPaymentMethod.BANK_TRANSFER, label: "Bank transfer" },
   ];
 
   const handlePayment = async () => {
@@ -49,9 +49,9 @@ const PaymentScreen = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
-        <Text style={styles.title}>Chọn phương thức thanh toán</Text>
+        <Text style={styles.title}>Choose payment method</Text>
         <Text style={styles.totalPrice}>
-          Tổng tiền:{" "}
+          Total price:{" "}
           {new Intl.NumberFormat("vi-VN", {
             style: "currency",
             currency: "VND",
@@ -84,7 +84,7 @@ const PaymentScreen = () => {
           disabled={!selectedMethod || loading}
         >
           <Text style={styles.paymentButtonText}>
-            {loading ? "Đang xử lý..." : "Thanh toán"}
+            {loading ? "Processing..." : "Billing"}
           </Text>
         </TouchableOpacity>
       </View>

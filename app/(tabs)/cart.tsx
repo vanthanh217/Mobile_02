@@ -1,5 +1,6 @@
 import { cartService } from "@/api/cart-api";
 import CartItem from "@/components/product/CartItem";
+import { useCart } from "@/contexts/CartContext";
 import { Cart, CartItem as CartItemResponse, User } from "@/interfaces";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
@@ -21,13 +22,18 @@ const CartScreen = () => {
   const [cart, setCart] = useState<Cart>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { refreshCart, setUserId, userId } = useCart();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const storedUser = await AsyncStorage.getItem("user");
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          if (parsedUser.id) {
+            setUserId(Number(parsedUser.id));
+          }
         }
       } catch (error) {
         console.error("Failed to load user data:", error);
@@ -40,7 +46,9 @@ const CartScreen = () => {
   useEffect(() => {
     (async () => {
       try {
-        const data = await cartService.getCartItems(user?.user_id || USER_ID);
+        const data = await cartService.getCartItems(
+          userId || user?.user_id || USER_ID
+        );
         setCart(data);
         setCartItems(data.items);
       } catch (error: any) {
@@ -49,7 +57,7 @@ const CartScreen = () => {
         setLoading(false);
       }
     })();
-  }, [loading]);
+  }, [refreshCart, userId]);
 
   return (
     <>
@@ -82,8 +90,6 @@ const CartScreen = () => {
                       key={item.product.id}
                       item={item.product}
                       userId={user?.user_id || USER_ID}
-                      loading={loading}
-                      setLoading={setLoading}
                       qty={item.quantity}
                     />
                   );

@@ -1,5 +1,6 @@
 import { login } from "@/api/auth-api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
 import { Login } from "@/interfaces";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
@@ -11,6 +12,7 @@ import Toast from "react-native-toast-message";
 const SignIn = () => {
   const router = useRouter();
   const { updateAuthState } = useAuth();
+  const { setUserId } = useCart();
   const [payload, setPayload] = useState<Login>({
     usernameOrEmail: "",
     password: "",
@@ -32,9 +34,12 @@ const SignIn = () => {
       if (response.user) {
         await AsyncStorage.setItem("user", JSON.stringify(response.user));
         await updateAuthState();
+        await setUserId(response.user.user_id);
         Toast.show({
           type: "success",
           text1: response.message || "Login successfully!",
+          autoHide: true,
+          visibilityTime: 500,
         });
         router.push("/");
       }

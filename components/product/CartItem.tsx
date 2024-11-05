@@ -7,25 +7,26 @@ import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import ModalDialog from "../ModalDialog";
 import QuantityInput from "./QuantityInput";
+import { wishlistService } from "@/api/wishlist-api";
+import { useCart } from "@/contexts/CartContext";
 
 interface CartItemProps {
   item: Product;
   userId: number;
-  loading: boolean;
-  setLoading: Dispatch<SetStateAction<boolean>>;
+
   qty: number;
 }
 
 const CartItem: React.FC<CartItemProps> = ({
   item,
   userId,
-  loading,
-  setLoading,
+
   qty,
 }) => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const brand = item.brand as Brand;
   const [quantity, setQuantity] = useState(qty);
+  const { triggerRefreshCart } = useCart();
 
   const handleQuantityChange = (newQuantity: number) => {
     setQuantity(newQuantity);
@@ -39,8 +40,13 @@ const CartItem: React.FC<CartItemProps> = ({
     try {
       const response = await cartService.removeFromCart(userId, productId);
       console.log(response);
-      Toast.show({ type: "success", text1: "Remove item successfully!" });
-      setLoading(!loading);
+      Toast.show({
+        type: "success",
+        text1: "Remove item successfully!",
+        autoHide: true,
+        visibilityTime: 500,
+      });
+      triggerRefreshCart();
     } catch (error: any) {
       Toast.show({
         type: "error",
@@ -61,6 +67,26 @@ const CartItem: React.FC<CartItemProps> = ({
       return;
     }
     setModalVisible(true);
+  };
+
+  const addToWishlist = async () => {
+    try {
+      triggerRefreshCart();
+      await wishlistService.addToWishlist(userId, item.id);
+      Toast.show({
+        type: "success",
+        text1: "Add to cart successfully!",
+        autoHide: true,
+        visibilityTime: 500,
+      });
+    } catch (error: any) {
+      Toast.show({
+        type: "error",
+        text1: error.message || "Error when add to cart",
+      });
+    } finally {
+      triggerRefreshCart();
+    }
   };
 
   return (
@@ -103,7 +129,7 @@ const CartItem: React.FC<CartItemProps> = ({
             <TouchableOpacity
               activeOpacity={0.9}
               className="flex flex-row items-center justify-center bg-[#F5F5F5] border border-silver rounded-lg w-10 h-10"
-              onPress={() => alert("Button Pressed!")}
+              onPress={addToWishlist}
             >
               <Ionicons name="heart-outline" size={22} color="#757575" />
             </TouchableOpacity>

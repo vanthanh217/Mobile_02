@@ -53,10 +53,7 @@ export interface ChangePassword {
   confirmPassword: string;
 }
 
-export type EditUserRequest = Pick<
-  User,
-  "avatar" | "full_name" | "phone_number" | "username"
->;
+export interface EditUserRequest {}
 
 export type Register = Pick<
   User,

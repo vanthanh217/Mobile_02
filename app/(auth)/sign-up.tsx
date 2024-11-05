@@ -61,6 +61,8 @@ const SignUp = () => {
       Toast.show({
         type: "success",
         text1: response.message || "Registered successfully!",
+        autoHide: true,
+        visibilityTime: 500,
       });
       router.push("/sign-in");
     } catch (error) {

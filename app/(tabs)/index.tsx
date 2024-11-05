@@ -27,6 +27,8 @@ export default function HomeScreen() {
       if (searchText) {
         const response = await searchProducts(searchText);
         setProducts(response);
+      } else {
+        setProducts([]);
       }
     }, 400);
 
